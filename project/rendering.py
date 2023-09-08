@@ -1,7 +1,7 @@
 import pygame
 
-from models import Bird, Pipe, Score
-from settings import screen, WINDOW_WIDTH, img_background, birds, img_pipe_top, img_pipe_bottom, WINDOW_HEIGHT
+from .models import Bird, Pipe, Score
+from . import settings
 
 pygame.init()
 
@@ -19,27 +19,27 @@ class Renderer:
 
     def draw_score(self):
         score_text = Score(self.score)
-        screen.blit(score_text.text, (WINDOW_WIDTH // 2, 30))
+        settings.screen.blit(score_text.text, (settings.WINDOW_WIDTH // 2, 30))
 
     def draw_background(self):
         for bg in self.backgrounds:
-            screen.blit(img_background, bg)
+            settings.screen.blit(settings.img_background, bg)
 
     def draw_bird(self):
         self.frame = (self.frame + 0.2) % 4
-        img_bird = birds.subsurface(34 * int(self.frame), 0, 34, 24)
+        img_bird = settings.birds.subsurface(34 * int(self.frame), 0, 34, 24)
         if self.state == 'play':
             img_bird = pygame.transform.rotate(img_bird, -bird.speed_y * 3)
-        screen.blit(img_bird, bird.model)
+        settings.screen.blit(img_bird, bird.model)
 
     def draw_pipes(self):
         for pipe in self.pipes:
             if pipe.y == 0:
-                rect = img_pipe_top.get_rect(bottomleft=pipe.bottomleft)
-                screen.blit(img_pipe_top, rect)
+                rect = settings.img_pipe_top.get_rect(bottomleft=pipe.bottomleft)
+                settings.screen.blit(settings.img_pipe_top, rect)
             else:
-                rect = img_pipe_bottom.get_rect(topleft=pipe.topleft)
-                screen.blit(img_pipe_bottom, rect)
+                rect = settings.img_pipe_bottom.get_rect(topleft=pipe.topleft)
+                settings.screen.blit(settings.img_pipe_bottom, rect)
 
     def update_score(self):
         for pipe in self.pipes:
@@ -49,13 +49,13 @@ class Renderer:
 
     def collisions(self):
         for pipe in self.pipes:
-            if bird.model.colliderect(pipe) or bird.model.top < 0 or bird.model.bottom > WINDOW_HEIGHT:
+            if bird.model.colliderect(pipe) or bird.model.top < 0 or bird.model.bottom > settings.WINDOW_HEIGHT:
                 self.state = 'start'
                 self.score = 0
 
     def pipe_spawn(self):
         if self.state == 'play':
-            if len(self.pipes) == 0 or self.pipes[-1].x < WINDOW_WIDTH - 200:
+            if len(self.pipes) == 0 or self.pipes[-1].x < settings.WINDOW_WIDTH - 200:
                 pipe_texture = Pipe()
                 self.pipes.append(pipe_texture.create_pipe_top())
                 self.pipes.append(pipe_texture.create_pipe_bottom())
@@ -72,7 +72,7 @@ class Renderer:
             self.pipe_remove(pipe)
 
     def background_spawn(self):
-        if self.backgrounds[-1].right <= WINDOW_WIDTH:
+        if self.backgrounds[-1].right <= settings.WINDOW_WIDTH:
             self.backgrounds.append(pygame.Rect(self.backgrounds[-1].right, 0, 288, 600))
 
     def background_remove(self, bg):
@@ -87,7 +87,7 @@ class Renderer:
     def game_stage(self):
         if self.state == 'start':
             self.pipes = []
-            bird.model.y = WINDOW_HEIGHT // 2
+            bird.model.y = settings.WINDOW_HEIGHT // 2
         elif self.state == 'play':
             bird.speed_y += 1
             bird.model.y += bird.speed_y

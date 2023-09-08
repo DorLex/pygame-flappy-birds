@@ -2,7 +2,7 @@ from random import randint
 
 import pygame
 
-from settings import WINDOW_WIDTH, WINDOW_HEIGHT, PIPE_WIDTH, PIPE_LENGTH, font
+from .settings import WINDOW_WIDTH, WINDOW_HEIGHT, PIPE_WIDTH, PIPE_LENGTH, font
 
 pygame.init()
 
