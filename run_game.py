@@ -5,32 +5,30 @@ from project.rendering import Renderer
 from project.models import bird
 
 pygame.init()
+
 clock = pygame.time.Clock()
 
 renderer = Renderer()
 
 
 def main():
-    click = False
     while True:
+
         # Управление
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-            elif event.type == pygame.KEYDOWN and click is False:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    click = True
-                    renderer.state = 'play'
+                    renderer.game_condition = 'play'
                     bird.fall_speed = -14
-            else:
-                click = False
 
         # Обработка
         renderer.game_stage()
         renderer.background_spawn()
         renderer.background_movement()
-        renderer.pipe_spawn()
-        renderer.pipe_movement()
+        renderer.pipes_spawn()
+        renderer.pipes_movement()
         renderer.collisions()
         renderer.update_score()
 
@@ -41,6 +39,7 @@ def main():
         renderer.draw_score()
 
         pygame.display.update()
+
         clock.tick(FPS)
 
 

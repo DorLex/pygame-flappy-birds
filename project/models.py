@@ -1,4 +1,4 @@
-from random import randint
+from abc import ABC, abstractmethod
 
 import pygame
 
@@ -16,13 +16,14 @@ class Bird:
         self.model = pygame.Rect(self.x, self.y, settings.BIRD_WIDTH, settings.BIRD_HEIGHT)
 
 
-class Pipe:
+class Pipe(ABC):
+
+    @abstractmethod
     def __init__(self, random_height):
         self.x = settings.WINDOW_WIDTH
         self.y = 0
         self.width = settings.PIPE_WIDTH
         self.height = settings.PIPE_HEIGHT
-
         self.random_height = random_height
 
     def get_rectangle(self):
@@ -48,7 +49,7 @@ class BottomPipe(Pipe):
 
 class Score:
     def __init__(self, score):
-        self.text = textures.font.render(str(int(score)), True, 'white')
+        self.text = textures.font.render(f'{int(score)}', True, 'white')
 
 
 bird = Bird()
