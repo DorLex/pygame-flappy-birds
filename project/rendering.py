@@ -7,28 +7,33 @@ from . import settings
 from . import textures
 
 
-class Spawner:
+class Game:
     def __init__(self):
-        self.background_rectangles = [pygame.Rect(0, 0, 288, 600), ]
         self.score = 0
+        self.game_condition = 'start'
+
+
+class Spawner:
+    def __init__(self, game: Game):
+        self.game = game
+        self.background_rectangles = [pygame.Rect(0, 0, 288, 600), ]
         self.pipes = []
         self.pipes_to_left_of_bird = []
-        self.game_condition = 'start'
 
     def update_score(self):
         for pipe in self.pipes:
             if pipe.model.right < bird.model.left and pipe not in self.pipes_to_left_of_bird:
                 self.pipes_to_left_of_bird.append(pipe)
-                self.score += 0.5
+                self.game.score += 0.5
 
     def collisions(self):
         for pipe in self.pipes:
             if bird.model.colliderect(pipe.model) or bird.model.top < 0 or bird.model.bottom > settings.WINDOW_HEIGHT:
-                self.game_condition = 'start'
-                self.score = 0
+                self.game.game_condition = 'start'
+                self.game.score = 0
 
     def pipes_spawn(self):
-        if self.game_condition == 'play':
+        if self.game.game_condition == 'play':
             if len(self.pipes) == 0 or self.pipes[-1].model.x < settings.WINDOW_WIDTH - settings.DISTANCE_BETWEEN_PIPES:
                 random_height = randint(100, 300)
                 self.pipes.append(TopPipe(random_height))
@@ -62,16 +67,17 @@ class Spawner:
                 self.background_remove(bg_rect)
 
     def game_stage(self):
-        if self.game_condition == 'start':
+        if self.game.game_condition == 'start':
             self.pipes = []
             bird.model.y = settings.WINDOW_HEIGHT // 2
-        elif self.game_condition == 'play':
+        elif self.game.game_condition == 'play':
             bird.fall_speed += 1
             bird.model.y += bird.fall_speed
 
 
 class Painter:
-    def __init__(self, spawner: Spawner):
+    def __init__(self, game: Game, spawner: Spawner):
+        self.game = game
         self.spawner = spawner
         self.bird_frame_num = 0
 
@@ -86,7 +92,7 @@ class Painter:
             settings.BIRD_WIDTH * int(self.bird_frame_num), 0, settings.BIRD_WIDTH, settings.BIRD_HEIGHT
         )
 
-        if self.spawner.game_condition == 'play':
+        if self.game.game_condition == 'play':
             img_bird = pygame.transform.rotate(img_bird, -bird.fall_speed * 3)
 
         textures.screen.blit(img_bird, bird.model)
@@ -101,5 +107,5 @@ class Painter:
                 textures.screen.blit(textures.pipe_bottom, rect)
 
     def draw_score(self):
-        score = Score(self.spawner.score)
+        score = Score(self.game.score)
         textures.screen.blit(score.text, (settings.WINDOW_WIDTH // 2, 30))
