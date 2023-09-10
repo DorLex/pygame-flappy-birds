@@ -1,6 +1,8 @@
+from random import randint
+
 import pygame
 
-from .models import Pipe, Score, bird
+from .models import Pipe, Score, bird, TopPipe, BottomPipe
 from . import settings
 from . import textures
 
@@ -29,47 +31,48 @@ class Renderer:
         self.frame = (self.frame + 0.2) % 4
         img_bird = textures.bird_frames.subsurface(34 * int(self.frame), 0, 34, 24)
         if self.state == 'play':
-            img_bird = pygame.transform.rotate(img_bird, -bird.speed_y * 3)
+            img_bird = pygame.transform.rotate(img_bird, -bird.fall_speed * 3)
         textures.screen.blit(img_bird, bird.model)
 
     def draw_pipes(self):
         for pipe in self.pipes:
-            if pipe.y == 0:
-                rect = textures.pipe_top.get_rect(bottomleft=pipe.bottomleft)
+            if pipe.model.y == 0:
+                rect = textures.pipe_top.get_rect(bottomleft=pipe.model.bottomleft)
                 textures.screen.blit(textures.pipe_top, rect)
             else:
-                rect = textures.pipe_bottom.get_rect(topleft=pipe.topleft)
+                rect = textures.pipe_bottom.get_rect(topleft=pipe.model.topleft)
                 textures.screen.blit(textures.pipe_bottom, rect)
 
     def update_score(self):
         for pipe in self.pipes:
-            if pipe.right < bird.model.left and pipe not in self.pipes_score:
+            if pipe.model.right < bird.model.left and pipe not in self.pipes_score:
                 self.pipes_score.append(pipe)
                 self.score += 0.5
 
     def collisions(self):
         for pipe in self.pipes:
-            if bird.model.colliderect(pipe) or bird.model.top < 0 or bird.model.bottom > settings.WINDOW_HEIGHT:
+            if bird.model.colliderect(pipe.model) or bird.model.top < 0 or bird.model.bottom > settings.WINDOW_HEIGHT:
                 self.state = 'start'
                 self.score = 0
 
     def pipe_spawn(self):
         if self.state == 'play':
-            if len(self.pipes) == 0 or self.pipes[-1].x < settings.WINDOW_WIDTH - 200:
-                pipe_texture = Pipe()
-                self.pipes.append(pipe_texture.create_pipe_top())
-                self.pipes.append(pipe_texture.create_pipe_bottom())
+            if len(self.pipes) == 0 or self.pipes[-1].model.x < settings.WINDOW_WIDTH - 200:
+                random_height = randint(100, 300)
+                self.pipes.append(TopPipe(random_height))
+                self.pipes.append(BottomPipe(random_height))
 
     def pipe_remove(self, pipe):
-        if pipe.right < 0:
-            self.pipes.remove(pipe)
-            if pipe in self.pipes_score:
-                self.pipes_score.remove(pipe)
+        self.pipes.remove(pipe)
+        if pipe in self.pipes_score:
+            self.pipes_score.remove(pipe)
 
     def pipe_movement(self):
         for pipe in reversed(self.pipes):
-            pipe.x -= 5
-            self.pipe_remove(pipe)
+            pipe.model.x -= 5
+
+            if pipe.model.right < 0:
+                self.pipe_remove(pipe)
 
     def background_spawn(self):
         if self.background_blocks[-1].right <= settings.WINDOW_WIDTH:
@@ -89,5 +92,5 @@ class Renderer:
             self.pipes = []
             bird.model.y = settings.WINDOW_HEIGHT // 2
         elif self.state == 'play':
-            bird.speed_y += 1
-            bird.model.y += bird.speed_y
+            bird.fall_speed += 1
+            bird.model.y += bird.fall_speed

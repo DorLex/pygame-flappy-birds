@@ -10,24 +10,40 @@ pygame.init()
 
 class Bird:
     def __init__(self):
+        self.x = settings.WINDOW_WIDTH // 3
         self.y = settings.WINDOW_HEIGHT // 2
-        self.speed_y = 0
-        self.model = pygame.Rect(settings.WINDOW_WIDTH // 3, self.y, 34, 24)
+        self.fall_speed = 0
+        self.model = pygame.Rect(self.x, self.y, settings.BIRD_WIDTH, settings.BIRD_HEIGHT)
 
 
 class Pipe:
-    def __init__(self):
-        self.pipe_differ = randint(100, 300)
+    def __init__(self, random_height):
+        self.x = settings.WINDOW_WIDTH
+        self.y = 0
+        self.width = settings.PIPE_WIDTH
+        self.height = settings.PIPE_HEIGHT
 
-    def create_pipe_top(self):
-        pipe_top = pygame.Rect((settings.WINDOW_WIDTH, 0),
-                               (settings.PIPE_WIDTH, settings.PIPE_LENGTH - self.pipe_differ))
-        return pipe_top
+        self.random_height = random_height
 
-    def create_pipe_bottom(self):
-        pipe_bottom = pygame.Rect((settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT - self.pipe_differ),
-                                  (settings.PIPE_WIDTH, settings.PIPE_LENGTH))
-        return pipe_bottom
+    def get_rectangle(self):
+        rectangle = pygame.Rect(self.x, self.y, self.width, self.height)
+        return rectangle
+
+
+class TopPipe(Pipe):
+    def __init__(self, random_height):
+        super().__init__(random_height)
+        self.height -= self.random_height
+
+        self.model: pygame.Rect = self.get_rectangle()
+
+
+class BottomPipe(Pipe):
+    def __init__(self, random_height):
+        super().__init__(random_height)
+        self.y = settings.WINDOW_HEIGHT - self.random_height
+
+        self.model: pygame.Rect = self.get_rectangle()
 
 
 class Score:

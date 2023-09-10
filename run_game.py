@@ -21,7 +21,7 @@ def main():
                 if event.key == pygame.K_SPACE:
                     click = True
                     renderer.state = 'play'
-                    bird.speed_y = -14
+                    bird.fall_speed = -14
             else:
                 click = False
 
