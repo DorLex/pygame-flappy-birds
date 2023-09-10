@@ -1,7 +1,8 @@
 import pygame
 
 from project.settings import FPS
-from project.rendering import Renderer, bird
+from project.rendering import Renderer
+from project.models import bird
 
 pygame.init()
 clock = pygame.time.Clock()

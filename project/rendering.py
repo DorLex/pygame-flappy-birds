@@ -1,16 +1,16 @@
 import pygame
 
-from .models import Bird, Pipe, Score
+from .models import Pipe, Score, bird
 from . import settings
+from . import textures
 
-pygame.init()
 
-bird = Bird()
+# pygame.init()
 
 
 class Renderer:
     def __init__(self):
-        self.backgrounds = [pygame.Rect(0, 0, 288, 600)]
+        self.background_blocks = [pygame.Rect(0, 0, 288, 600), ]
         self.frame = 0
         self.score = 0
         self.pipes = []
@@ -19,27 +19,27 @@ class Renderer:
 
     def draw_score(self):
         score_text = Score(self.score)
-        settings.screen.blit(score_text.text, (settings.WINDOW_WIDTH // 2, 30))
+        textures.screen.blit(score_text.text, (settings.WINDOW_WIDTH // 2, 30))
 
     def draw_background(self):
-        for bg in self.backgrounds:
-            settings.screen.blit(settings.img_background, bg)
+        for bg in self.background_blocks:
+            textures.screen.blit(textures.background_block, bg)
 
     def draw_bird(self):
         self.frame = (self.frame + 0.2) % 4
-        img_bird = settings.birds.subsurface(34 * int(self.frame), 0, 34, 24)
+        img_bird = textures.bird_frames.subsurface(34 * int(self.frame), 0, 34, 24)
         if self.state == 'play':
             img_bird = pygame.transform.rotate(img_bird, -bird.speed_y * 3)
-        settings.screen.blit(img_bird, bird.model)
+        textures.screen.blit(img_bird, bird.model)
 
     def draw_pipes(self):
         for pipe in self.pipes:
             if pipe.y == 0:
-                rect = settings.img_pipe_top.get_rect(bottomleft=pipe.bottomleft)
-                settings.screen.blit(settings.img_pipe_top, rect)
+                rect = textures.pipe_top.get_rect(bottomleft=pipe.bottomleft)
+                textures.screen.blit(textures.pipe_top, rect)
             else:
-                rect = settings.img_pipe_bottom.get_rect(topleft=pipe.topleft)
-                settings.screen.blit(settings.img_pipe_bottom, rect)
+                rect = textures.pipe_bottom.get_rect(topleft=pipe.topleft)
+                textures.screen.blit(textures.pipe_bottom, rect)
 
     def update_score(self):
         for pipe in self.pipes:
@@ -72,15 +72,15 @@ class Renderer:
             self.pipe_remove(pipe)
 
     def background_spawn(self):
-        if self.backgrounds[-1].right <= settings.WINDOW_WIDTH:
-            self.backgrounds.append(pygame.Rect(self.backgrounds[-1].right, 0, 288, 600))
+        if self.background_blocks[-1].right <= settings.WINDOW_WIDTH:
+            self.background_blocks.append(pygame.Rect(self.background_blocks[-1].right, 0, 288, 600))
 
     def background_remove(self, bg):
         if bg.right < 0:
-            self.backgrounds.remove(bg)
+            self.background_blocks.remove(bg)
 
     def background_movement(self):
-        for bg in reversed(self.backgrounds):
+        for bg in reversed(self.background_blocks):
             bg.x -= 1
             self.background_remove(bg)
 
