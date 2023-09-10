@@ -1,14 +1,16 @@
 import pygame
 
 from project.settings import FPS
-from project.rendering import Renderer
+from project.rendering import Spawner, Painter
 from project.models import bird
 
 pygame.init()
 
 clock = pygame.time.Clock()
 
-renderer = Renderer()
+spawner = Spawner()
+
+painter = Painter(spawner)
 
 
 def main():
@@ -20,23 +22,23 @@ def main():
                 exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    renderer.game_condition = 'play'
+                    spawner.game_condition = 'play'
                     bird.fall_speed = -14
 
         # Обработка
-        renderer.game_stage()
-        renderer.background_spawn()
-        renderer.background_movement()
-        renderer.pipes_spawn()
-        renderer.pipes_movement()
-        renderer.collisions()
-        renderer.update_score()
+        spawner.game_stage()
+        spawner.background_spawn()
+        spawner.background_movement()
+        spawner.pipes_spawn()
+        spawner.pipes_movement()
+        spawner.collisions()
+        spawner.update_score()
 
         # Отрисовка
-        renderer.draw_background()
-        renderer.draw_bird()
-        renderer.draw_pipes()
-        renderer.draw_score()
+        painter.draw_background()
+        painter.draw_bird()
+        painter.draw_pipes()
+        painter.draw_score()
 
         pygame.display.update()
 

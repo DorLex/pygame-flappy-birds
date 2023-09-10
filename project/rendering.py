@@ -7,43 +7,13 @@ from . import settings
 from . import textures
 
 
-class Renderer:
+class Spawner:
     def __init__(self):
         self.background_rectangles = [pygame.Rect(0, 0, 288, 600), ]
-        self.bird_frame_num = 0
         self.score = 0
         self.pipes = []
         self.pipes_to_left_of_bird = []
         self.game_condition = 'start'
-
-    def draw_score(self):
-        score = Score(self.score)
-        textures.screen.blit(score.text, (settings.WINDOW_WIDTH // 2, 30))
-
-    def draw_background(self):
-        for bg_rect in self.background_rectangles:
-            textures.screen.blit(textures.background_img_block, bg_rect)
-
-    def draw_bird(self):
-        self.bird_frame_num = (self.bird_frame_num + 0.2) % 4
-
-        img_bird = textures.bird_frames.subsurface(
-            settings.BIRD_WIDTH * int(self.bird_frame_num), 0, settings.BIRD_WIDTH, settings.BIRD_HEIGHT
-        )
-
-        if self.game_condition == 'play':
-            img_bird = pygame.transform.rotate(img_bird, -bird.fall_speed * 3)
-
-        textures.screen.blit(img_bird, bird.model)
-
-    def draw_pipes(self):
-        for pipe in self.pipes:
-            if type(pipe) == TopPipe:
-                rect = textures.pipe_top.get_rect(bottomleft=pipe.model.bottomleft)
-                textures.screen.blit(textures.pipe_top, rect)
-            else:
-                rect = textures.pipe_bottom.get_rect(topleft=pipe.model.topleft)
-                textures.screen.blit(textures.pipe_bottom, rect)
 
     def update_score(self):
         for pipe in self.pipes:
@@ -98,3 +68,38 @@ class Renderer:
         elif self.game_condition == 'play':
             bird.fall_speed += 1
             bird.model.y += bird.fall_speed
+
+
+class Painter:
+    def __init__(self, spawner: Spawner):
+        self.spawner = spawner
+        self.bird_frame_num = 0
+
+    def draw_background(self):
+        for bg_rect in self.spawner.background_rectangles:
+            textures.screen.blit(textures.background_img_block, bg_rect)
+
+    def draw_bird(self):
+        self.bird_frame_num = (self.bird_frame_num + 0.2) % 4
+
+        img_bird = textures.bird_frames.subsurface(
+            settings.BIRD_WIDTH * int(self.bird_frame_num), 0, settings.BIRD_WIDTH, settings.BIRD_HEIGHT
+        )
+
+        if self.spawner.game_condition == 'play':
+            img_bird = pygame.transform.rotate(img_bird, -bird.fall_speed * 3)
+
+        textures.screen.blit(img_bird, bird.model)
+
+    def draw_pipes(self):
+        for pipe in self.spawner.pipes:
+            if type(pipe) == TopPipe:
+                rect = textures.pipe_top.get_rect(bottomleft=pipe.model.bottomleft)
+                textures.screen.blit(textures.pipe_top, rect)
+            else:
+                rect = textures.pipe_bottom.get_rect(topleft=pipe.model.topleft)
+                textures.screen.blit(textures.pipe_bottom, rect)
+
+    def draw_score(self):
+        score = Score(self.spawner.score)
+        textures.screen.blit(score.text, (settings.WINDOW_WIDTH // 2, 30))
