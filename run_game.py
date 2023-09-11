@@ -9,7 +9,6 @@ pygame.init()
 clock = pygame.time.Clock()
 
 container = DataContainer()
-
 spawner = Spawner(container)
 painter = Painter(container)
 
@@ -39,13 +38,10 @@ def main():
             painter.draw_pipes()
 
             spawner.bird_falling()
-
             spawner.check_collisions()
-
             spawner.update_score()
 
         painter.draw_score()
-
         pygame.display.update()
 
 

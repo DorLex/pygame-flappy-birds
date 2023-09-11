@@ -28,7 +28,7 @@ class Spawner:
         bird.model.y = settings.WINDOW_HEIGHT // 2
 
     def check_collisions(self):
-        if bird.model.top <= 0 or bird.model.bottom >= settings.WINDOW_HEIGHT:
+        if bird.model.bottom >= settings.WINDOW_HEIGHT or bird.model.top <= 0:
             self._game_over()
             return
 
@@ -38,21 +38,19 @@ class Spawner:
 
     def update_score(self):
         for pipe in self.container.pipes:
-            if pipe.model.right < bird.model.left and pipe not in self.container.pipes_to_left_of_bird:
+            if pipe.model.right <= bird.model.left and pipe not in self.container.pipes_to_left_of_bird:
                 self.container.pipes_to_left_of_bird.append(pipe)
                 self.container.score += 0.5
 
     def pipes_spawn(self):
-        if (
-                not self.container.pipes
-                or
-                self.container.pipes[-1].model.x < settings.WINDOW_WIDTH - settings.DISTANCE_BETWEEN_PIPES
-        ):
+        distance_for_next_pipe = settings.WINDOW_WIDTH - settings.DISTANCE_BETWEEN_PIPES
+
+        if not self.container.pipes or self.container.pipes[-1].model.x < distance_for_next_pipe:
             random_height = randint(100, 300)
             self.container.pipes.append(TopPipe(random_height))
             self.container.pipes.append(BottomPipe(random_height))
 
-    def pipe_remove(self, pipe):
+    def _pipe_remove(self, pipe):
         self.container.pipes.remove(pipe)
         if pipe in self.container.pipes_to_left_of_bird:
             self.container.pipes_to_left_of_bird.remove(pipe)
@@ -62,7 +60,7 @@ class Spawner:
             pipe.model.x -= 5
 
             if pipe.model.right < 0:
-                self.pipe_remove(pipe)
+                self._pipe_remove(pipe)
 
     def background_spawn(self):
         if self.container.background_rectangles[-1].right <= settings.WINDOW_WIDTH:
@@ -70,14 +68,15 @@ class Spawner:
                 pygame.Rect(self.container.background_rectangles[-1].right, 0, 288, settings.WINDOW_HEIGHT)
             )
 
-    def background_remove(self, bg_rect):
+    def _background_remove(self, bg_rect):
         self.container.background_rectangles.remove(bg_rect)
 
     def background_movement(self):
         for bg_rect in reversed(self.container.background_rectangles):
             bg_rect.x -= 1
+
             if bg_rect.right < 0:
-                self.background_remove(bg_rect)
+                self._background_remove(bg_rect)
 
     def bird_falling(self):
         bird.fall_speed += 1
