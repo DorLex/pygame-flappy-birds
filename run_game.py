@@ -2,7 +2,7 @@ import pygame
 from pygame.time import Clock
 
 from src.constants import GameConditionEnum
-from src.models.bird import bird
+from src.control import control
 from src.rendering.common_data import entity_container
 from src.rendering.entity_manager import EntityManager
 from src.rendering.painter import Painter
@@ -20,14 +20,7 @@ def main() -> None:
     while True:
         clock.tick(FPS)
 
-        # Управление:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    entity_container.game_condition = GameConditionEnum.play
-                    bird.fall_speed = -14
+        control()
 
         # Рендеринг:
         entity_manager.background_spawn()
