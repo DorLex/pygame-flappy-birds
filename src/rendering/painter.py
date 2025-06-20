@@ -7,11 +7,11 @@ from src.constants import GameConditionEnum, Window
 from src.models.bird import bird
 from src.models.pipes.top import TopPipe
 from src.models.score import Score
-from src.rendering.common_data import ItemContainer
+from src.rendering.common_data import EntityContainer
 
 
 class Painter:
-    def __init__(self, container: ItemContainer) -> None:
+    def __init__(self, container: EntityContainer) -> None:
         self.container = container
 
     def draw_background(self) -> None:

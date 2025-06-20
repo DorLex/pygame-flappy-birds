@@ -4,12 +4,12 @@ from src.models.bird import bird
 from src.models.pipes.abstract import AbstractPipe
 from src.models.pipes.bottom import BottomPipe
 from src.models.pipes.top import TopPipe
-from src.rendering.common_data import ItemContainer
+from src.rendering.common_data import EntityContainer
 from src.settings import DISTANCE_FOR_SPAWN_NEW_PIPE
 
 
 class EntityManager:
-    def __init__(self, container: ItemContainer) -> None:
+    def __init__(self, container: EntityContainer) -> None:
         self.container = container
 
     def _game_over(self) -> None:
