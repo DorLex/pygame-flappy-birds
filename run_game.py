@@ -1,7 +1,7 @@
 import pygame
 from pygame.time import Clock
 
-from src.models import bird
+from src.models.bird import bird
 from src.rendering import DataContainer, Painter, Spawner
 from src.settings import FPS
 
