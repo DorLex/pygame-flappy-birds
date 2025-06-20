@@ -10,7 +10,8 @@ class Bird:
     width: int = 34
     height: int = 24
     x: int = Window.width // 3
-    y: int = Window.height // 2
+    base_y: int = Window.height // 2
+    y: int = base_y
     fall_speed: int = 0
     collision_model: Rect = Rect(x, y, width, height)
 

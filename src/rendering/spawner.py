@@ -1,62 +1,57 @@
-from random import randint
-
 from pygame import Rect
 
-from src.constants import GameConditionEnum, Window
+from src.constants import GameConditionEnum, RandomPipeHeight, Window
 from src.models.bird import bird
 from src.models.pipes.abstract import AbstractPipe
 from src.models.pipes.bottom import BottomPipe
 from src.models.pipes.top import TopPipe
-from src.rendering.common_data import DataContainer
-from src.settings import DISTANCE_BETWEEN_PIPES
+from src.rendering.common_data import ItemContainer
+from src.settings import DISTANCE_FOR_SPAWN_NEW_PIPE
 
 
 class Spawner:
-    def __init__(self, container: DataContainer) -> None:
+    def __init__(self, container: ItemContainer) -> None:
         self.container = container
 
     def _game_over(self) -> None:
         self.container.game_condition = GameConditionEnum.start
         self.container.score = 0
         self.container.pipes = []
-        bird.collision_model.y = Window.height // 2
+        bird.collision_model.y = bird.base_y
 
     def check_collisions(self) -> None:
+        # Столкновение с границами окна:
         if bird.collision_model.bottom >= Window.height or bird.collision_model.top <= 0:
             self._game_over()
             return
 
+        # Столкновение с трубами:
         for pipe in self.container.pipes:
             if bird.collision_model.colliderect(pipe.collision_model):
                 self._game_over()
 
-    def update_score(self) -> None:
+    def increase_score(self) -> None:
         for pipe in self.container.pipes:
-            if (
-                pipe.collision_model.right <= bird.collision_model.left
-                and pipe not in self.container.pipes_to_left_of_bird
-            ):
-                self.container.pipes_to_left_of_bird.append(pipe)
+            if pipe.collision_model.right <= bird.collision_model.left and pipe not in self.container.passed_pipes:
+                self.container.passed_pipes.add(pipe)
                 self.container.score += 0.5
 
     def pipes_spawn(self) -> None:
-        distance_for_next_pipe: int = Window.width - DISTANCE_BETWEEN_PIPES
-
-        if not self.container.pipes or self.container.pipes[-1].collision_model.x < distance_for_next_pipe:
-            random_height: int = randint(100, 300)
-            self.container.pipes.append(TopPipe(random_height))
-            self.container.pipes.append(BottomPipe(random_height))
+        if not self.container.pipes or self.container.pipes[-1].collision_model.x < DISTANCE_FOR_SPAWN_NEW_PIPE:
+            random_pipe_height: int = RandomPipeHeight.get()
+            self.container.pipes.append(TopPipe(random_pipe_height))
+            self.container.pipes.append(BottomPipe(random_pipe_height))
 
     def _pipe_remove(self, pipe: AbstractPipe) -> None:
         self.container.pipes.remove(pipe)
-        if pipe in self.container.pipes_to_left_of_bird:
-            self.container.pipes_to_left_of_bird.remove(pipe)
+        if pipe in self.container.passed_pipes:
+            self.container.passed_pipes.remove(pipe)
 
     def pipes_movement(self) -> None:
-        for pipe in reversed(self.container.pipes):
+        for pipe in self.container.pipes:
             pipe.collision_model.x -= 5
 
-            if pipe.collision_model.right < 0:
+            if pipe.collision_model.x < -250:  # когда труба за границами окна
                 self._pipe_remove(pipe)
 
     def background_spawn(self) -> None:
@@ -65,15 +60,15 @@ class Spawner:
                 Rect(self.container.backgrounds[-1].right, 0, 288, Window.height),
             )
 
-    def _background_remove(self, bg_rect: Rect) -> None:
-        self.container.backgrounds.remove(bg_rect)
+    def _background_remove(self, background: Rect) -> None:
+        self.container.backgrounds.remove(background)
 
     def background_movement(self) -> None:
-        for bg_rect in reversed(self.container.backgrounds):
-            bg_rect.x -= 1
+        for background in self.container.backgrounds:
+            background.x -= 1
 
-            if bg_rect.right < 0:
-                self._background_remove(bg_rect)
+            if background.right < 0:  # когда background за границами окна
+                self._background_remove(background)
 
     def bird_falling(self) -> None:
         bird.fall_speed += 1
