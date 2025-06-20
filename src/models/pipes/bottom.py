@@ -10,5 +10,5 @@ pygame.init()
 class BottomPipe(AbstractPipe):
     def __init__(self, random_height: int) -> None:
         super().__init__(random_height)
-        self.y = Window.height - self.random_height
-        self.collision_model: Rect = self.get_rectangle()
+        self.y: int = Window.height - self.random_height
+        self.collision_model: Rect = self._create_collision_model()

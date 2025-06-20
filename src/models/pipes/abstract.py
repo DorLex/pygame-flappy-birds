@@ -11,12 +11,12 @@ pygame.init()
 class AbstractPipe(ABC):
     @abstractmethod
     def __init__(self, random_height: int) -> None:
-        self.x = Window.width
-        self.y = 0
-        self.width = 52
-        self.height = 400
-        self.random_height = random_height
-        self.collision_model: Rect = self.get_rectangle()
+        self.x: int = Window.width
+        self.y: int = 0
+        self.width: int = 52  # == размеру текстуры
+        self.height: int = 400  # == размеру текстуры
+        self.random_height: int = random_height
+        self.collision_model: Rect | None = None
 
-    def get_rectangle(self) -> Rect:
+    def _create_collision_model(self) -> Rect:
         return Rect(self.x, self.y, self.width, self.height)
