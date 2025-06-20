@@ -2,13 +2,13 @@ from random import randint
 
 from pygame import Rect
 
-from src import settings
-from src.constants import GameConditionEnum
+from src.constants import GameConditionEnum, Window
 from src.models.bird import bird
 from src.models.pipes.abstract import AbstractPipe
 from src.models.pipes.bottom import BottomPipe
 from src.models.pipes.top import TopPipe
 from src.rendering.common_data import DataContainer
+from src.settings import DISTANCE_BETWEEN_PIPES
 
 
 class Spawner:
@@ -19,10 +19,10 @@ class Spawner:
         self.container.game_condition = GameConditionEnum.start
         self.container.score = 0
         self.container.pipes = []
-        bird.collision_model.y = settings.WINDOW_HEIGHT // 2
+        bird.collision_model.y = Window.height // 2
 
     def check_collisions(self) -> None:
-        if bird.collision_model.bottom >= settings.WINDOW_HEIGHT or bird.collision_model.top <= 0:
+        if bird.collision_model.bottom >= Window.height or bird.collision_model.top <= 0:
             self._game_over()
             return
 
@@ -40,7 +40,7 @@ class Spawner:
                 self.container.score += 0.5
 
     def pipes_spawn(self) -> None:
-        distance_for_next_pipe: int = settings.WINDOW_WIDTH - settings.DISTANCE_BETWEEN_PIPES
+        distance_for_next_pipe: int = Window.width - DISTANCE_BETWEEN_PIPES
 
         if not self.container.pipes or self.container.pipes[-1].collision_model.x < distance_for_next_pipe:
             random_height: int = randint(100, 300)
@@ -60,9 +60,9 @@ class Spawner:
                 self._pipe_remove(pipe)
 
     def background_spawn(self) -> None:
-        if self.container.backgrounds[-1].right <= settings.WINDOW_WIDTH:
+        if self.container.backgrounds[-1].right <= Window.width:
             self.container.backgrounds.append(
-                Rect(self.container.backgrounds[-1].right, 0, 288, settings.WINDOW_HEIGHT),
+                Rect(self.container.backgrounds[-1].right, 0, 288, Window.height),
             )
 
     def _background_remove(self, bg_rect: Rect) -> None:

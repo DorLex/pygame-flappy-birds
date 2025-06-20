@@ -1,8 +1,8 @@
 import pygame
 
-from src import settings, textures
+from src import textures
 from src.components import screen
-from src.constants import GameConditionEnum
+from src.constants import GameConditionEnum, Window
 from src.models.bird import bird
 from src.models.pipes.top import TopPipe
 from src.models.score import Score
@@ -20,10 +20,10 @@ class Painter:
     def draw_bird(self) -> None:
         self.container.bird_frame_num = (self.container.bird_frame_num + 0.2) % 4
         img_bird = textures.bird_frames.subsurface(
-            settings.BIRD_WIDTH * int(self.container.bird_frame_num),
+            bird.width * int(self.container.bird_frame_num),
             0,
-            settings.BIRD_WIDTH,
-            settings.BIRD_HEIGHT,
+            bird.width,
+            bird.height,
         )
 
         if self.container.game_condition == GameConditionEnum.play:
@@ -42,4 +42,4 @@ class Painter:
 
     def draw_score(self) -> None:
         score: Score = Score(self.container.score)
-        screen.blit(score.text, (settings.WINDOW_WIDTH // 2, 30))
+        screen.blit(score.text, (Window.width // 2, 30))
