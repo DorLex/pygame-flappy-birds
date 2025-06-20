@@ -4,15 +4,15 @@ from pygame.time import Clock
 from src.constants import GameConditionEnum
 from src.models.bird import bird
 from src.rendering.common_data import item_container
+from src.rendering.entity_manager import EntityManager
 from src.rendering.painter import Painter
-from src.rendering.spawner import Spawner
 from src.settings import FPS
 
 pygame.init()
 
 clock: Clock = Clock()
 
-spawner: Spawner = Spawner(item_container)
+entity_manager: EntityManager = EntityManager(item_container)
 painter: Painter = Painter(item_container)
 
 
@@ -30,20 +30,20 @@ def main() -> None:
                     bird.fall_speed = -14
 
         # Рендеринг:
-        spawner.background_spawn()
-        spawner.background_movement()
+        entity_manager.background_spawn()
+        entity_manager.background_movement()
         painter.draw_background()
 
         painter.draw_bird()
 
         if item_container.game_condition == GameConditionEnum.play:
-            spawner.pipes_spawn()
-            spawner.pipes_movement()
+            entity_manager.pipes_spawn()
+            entity_manager.pipes_movement()
             painter.draw_pipes()
 
-            spawner.bird_falling()
-            spawner.check_collisions()
-            spawner.increase_score()
+            entity_manager.bird_falling()
+            entity_manager.check_collisions()
+            entity_manager.increase_score()
 
         painter.draw_score()
 

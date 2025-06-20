@@ -16,7 +16,7 @@ class Painter:
 
     def draw_background(self) -> None:
         for background in self.container.backgrounds:
-            screen.blit(textures.background, background)
+            screen.blit(textures.background, background.collision_model)
 
     def draw_bird(self) -> None:
         self.container.bird_frame_num = int((self.container.bird_frame_num + 0.2) % 4)

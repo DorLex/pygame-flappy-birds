@@ -1,6 +1,5 @@
-from pygame import Rect
-
 from src.constants import GameConditionEnum, RandomPipeHeight, Window
+from src.models.background import Background
 from src.models.bird import bird
 from src.models.pipes.abstract import AbstractPipe
 from src.models.pipes.bottom import BottomPipe
@@ -9,7 +8,7 @@ from src.rendering.common_data import ItemContainer
 from src.settings import DISTANCE_FOR_SPAWN_NEW_PIPE
 
 
-class Spawner:
+class EntityManager:
     def __init__(self, container: ItemContainer) -> None:
         self.container = container
 
@@ -51,23 +50,23 @@ class Spawner:
         for pipe in self.container.pipes:
             pipe.collision_model.x -= 5
 
-            if pipe.collision_model.x < -250:  # когда труба за границами окна
+            if pipe.collision_model.right < -200:  # когда труба за границами окна
                 self._pipe_remove(pipe)
 
     def background_spawn(self) -> None:
-        if self.container.backgrounds[-1].right <= Window.width:
+        if self.container.backgrounds[-1].collision_model.right <= Window.width:
             self.container.backgrounds.append(
-                Rect(self.container.backgrounds[-1].right, 0, 288, Window.height),
+                Background(x=self.container.backgrounds[-1].collision_model.right),
             )
 
-    def _background_remove(self, background: Rect) -> None:
+    def _background_remove(self, background: Background) -> None:
         self.container.backgrounds.remove(background)
 
     def background_movement(self) -> None:
         for background in self.container.backgrounds:
-            background.x -= 1
+            background.collision_model.x -= 1
 
-            if background.right < 0:  # когда background за границами окна
+            if background.collision_model.right < 0:  # когда background за границами окна
                 self._background_remove(background)
 
     def bird_falling(self) -> None:
