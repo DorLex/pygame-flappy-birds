@@ -1,0 +1,3 @@
+DISTANCE_BETWEEN_PIPES: int = 200
+
+FPS: int = 60
