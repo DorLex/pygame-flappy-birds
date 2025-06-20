@@ -60,16 +60,16 @@ class Spawner:
                 self._pipe_remove(pipe)
 
     def background_spawn(self) -> None:
-        if self.container.background_rectangles[-1].right <= settings.WINDOW_WIDTH:
-            self.container.background_rectangles.append(
-                Rect(self.container.background_rectangles[-1].right, 0, 288, settings.WINDOW_HEIGHT),
+        if self.container.backgrounds[-1].right <= settings.WINDOW_WIDTH:
+            self.container.backgrounds.append(
+                Rect(self.container.backgrounds[-1].right, 0, 288, settings.WINDOW_HEIGHT),
             )
 
     def _background_remove(self, bg_rect: Rect) -> None:
-        self.container.background_rectangles.remove(bg_rect)
+        self.container.backgrounds.remove(bg_rect)
 
     def background_movement(self) -> None:
-        for bg_rect in reversed(self.container.background_rectangles):
+        for bg_rect in reversed(self.container.backgrounds):
             bg_rect.x -= 1
 
             if bg_rect.right < 0:

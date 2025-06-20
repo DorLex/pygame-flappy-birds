@@ -16,6 +16,7 @@ class AbstractPipe(ABC):
         self.width = settings.PIPE_WIDTH
         self.height = settings.PIPE_HEIGHT
         self.random_height = random_height
+        self.collision_model: Rect = self.get_rectangle()
 
     def get_rectangle(self) -> Rect:
         return Rect(self.x, self.y, self.width, self.height)

@@ -1,6 +1,7 @@
 import pygame
 
 from src import settings, textures
+from src.components import screen
 from src.constants import GameConditionEnum
 from src.models.bird import bird
 from src.models.pipes.top import TopPipe
@@ -13,8 +14,8 @@ class Painter:
         self.container = container
 
     def draw_background(self) -> None:
-        for bg_rect in self.container.background_rectangles:
-            textures.screen.blit(textures.background_img_block, bg_rect)
+        for bg_rect in self.container.backgrounds:
+            screen.blit(textures.background_img_block, bg_rect)
 
     def draw_bird(self) -> None:
         self.container.bird_frame_num = (self.container.bird_frame_num + 0.2) % 4
@@ -28,17 +29,17 @@ class Painter:
         if self.container.game_condition == GameConditionEnum.play:
             img_bird = pygame.transform.rotate(img_bird, -bird.fall_speed * 3)
 
-        textures.screen.blit(img_bird, bird.collision_model)
+        screen.blit(img_bird, bird.collision_model)
 
     def draw_pipes(self) -> None:
         for pipe in self.container.pipes:
             if type(pipe) == TopPipe:
                 rect = textures.pipe_top.get_rect(bottomleft=pipe.collision_model.bottomleft)
-                textures.screen.blit(textures.pipe_top, rect)
+                screen.blit(textures.pipe_top, rect)
             else:
                 rect = textures.pipe_bottom.get_rect(topleft=pipe.collision_model.topleft)
-                textures.screen.blit(textures.pipe_bottom, rect)
+                screen.blit(textures.pipe_bottom, rect)
 
     def draw_score(self) -> None:
         score: Score = Score(self.container.score)
-        textures.screen.blit(score.text, (settings.WINDOW_WIDTH // 2, 30))
+        screen.blit(score.text, (settings.WINDOW_WIDTH // 2, 30))
