@@ -1,8 +1,11 @@
 import pygame
 from pygame.time import Clock
 
+from src.constants import GameConditionEnum
 from src.models.bird import bird
-from src.rendering import DataContainer, Painter, Spawner
+from src.rendering.common_data import DataContainer
+from src.rendering.painter import Painter
+from src.rendering.spawner import Spawner
 from src.settings import FPS
 
 pygame.init()
@@ -24,7 +27,7 @@ def main() -> None:
                 exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    container.game_condition = 'play'
+                    container.game_condition = GameConditionEnum.play
                     bird.fall_speed = -14
 
         # Отрисовка:
@@ -34,7 +37,7 @@ def main() -> None:
 
         painter.draw_bird()
 
-        if container.game_condition == 'play':
+        if container.game_condition == GameConditionEnum.play:
             spawner.pipes_spawn()
             spawner.pipes_movement()
             painter.draw_pipes()
