@@ -3,10 +3,9 @@ from pygame import Surface
 
 from src import textures
 from src.components import screen
-from src.constants import GameConditionEnum, Window
+from src.constants import GameConditionEnum
 from src.models.bird import bird
 from src.models.pipes.top import TopPipe
-from src.models.score import Score
 from src.rendering.common_data import EntityContainer
 
 
@@ -40,5 +39,4 @@ class Painter:
                 screen.blit(textures.pipe_bottom, pipe)
 
     def draw_score(self) -> None:
-        score: Score = Score(self.container.score)
-        screen.blit(score.texture, (Window.width // 2, 30))
+        screen.blit(self.container.score.texture, self.container.score.location)

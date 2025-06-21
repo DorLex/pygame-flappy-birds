@@ -64,11 +64,11 @@ class EntityManager:
         for pipe in self.container.pipes:
             if pipe.right <= bird.left and pipe not in self.container.passed_pipes:
                 self.container.passed_pipes.add(pipe)
-                self.container.score += 0.5
+                self.container.score.value += 0.5
 
     def _game_over(self) -> None:
         self.container.game_condition = GameConditionEnum.start
-        self.container.score = 0
+        self.container.score.value = 0
         self.container.pipes = []
         self.container.passed_pipes = set()
         bird.y = bird.base_y
