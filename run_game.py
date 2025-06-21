@@ -2,19 +2,18 @@ import pygame
 from pygame.time import Clock
 
 from src.constants import GameConditionEnum
-from src.models.bird import bird
-from src.rendering.common_data import DataContainer
+from src.control import control
+from src.rendering.common_data import entity_container
+from src.rendering.entity_manager import EntityManager
 from src.rendering.painter import Painter
-from src.rendering.spawner import Spawner
 from src.settings import FPS
 
 pygame.init()
 
 clock: Clock = Clock()
 
-container: DataContainer = DataContainer()
-spawner: Spawner = Spawner(container)
-painter: Painter = Painter(container)
+entity_manager: EntityManager = EntityManager(entity_container)
+painter: Painter = Painter(entity_container)
 
 
 def main() -> None:
@@ -22,31 +21,26 @@ def main() -> None:
         clock.tick(FPS)
 
         # Управление:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    container.game_condition = GameConditionEnum.play
-                    bird.fall_speed = -14
+        control()
 
-        # Отрисовка:
-        spawner.background_spawn()
-        spawner.background_movement()
+        # Рендеринг:
+        entity_manager.spawn_background()
+        entity_manager.move_background()
         painter.draw_background()
 
         painter.draw_bird()
 
-        if container.game_condition == GameConditionEnum.play:
-            spawner.pipes_spawn()
-            spawner.pipes_movement()
+        if entity_container.game_condition == GameConditionEnum.play:
+            entity_manager.spawn_pipes()
+            entity_manager.move_pipes()
             painter.draw_pipes()
 
-            spawner.bird_falling()
-            spawner.check_collisions()
-            spawner.update_score()
+            entity_manager.bird_gravity()
+            entity_manager.check_collisions()
+            entity_manager.increase_score()
 
         painter.draw_score()
+
         pygame.display.update()
 
 

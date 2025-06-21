@@ -1,14 +1,15 @@
-from pygame import Rect
-
 from src.constants import GameConditionEnum
-from src.models.pipes.abstract import AbstractPipe
+from src.models.background import Background
+from src.models.pipes.abstract import BasePipe
+from src.models.score import Score
 
 
-class DataContainer:
-    def __init__(self) -> None:
-        self.bird_frame_num = 0
-        self.backgrounds: list[Rect] = [Rect(0, 0, 288, 600)]
-        self.pipes: list[AbstractPipe] = []
-        self.pipes_to_left_of_bird = []
-        self.game_condition: GameConditionEnum = GameConditionEnum.start
-        self.score = 0
+class EntityContainer:
+    backgrounds: list[Background] = [Background()]
+    pipes: list[BasePipe] = []
+    passed_pipes: set[BasePipe] = set()
+    game_condition: GameConditionEnum = GameConditionEnum.start
+    score: Score = Score()
+
+
+entity_container: EntityContainer = EntityContainer()
