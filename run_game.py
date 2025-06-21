@@ -20,21 +20,22 @@ def main() -> None:
     while True:
         clock.tick(FPS)
 
+        # Управление:
         control()
 
         # Рендеринг:
-        entity_manager.background_spawn()
-        entity_manager.background_movement()
+        entity_manager.spawn_background()
+        entity_manager.move_background()
         painter.draw_background()
 
         painter.draw_bird()
 
         if entity_container.game_condition == GameConditionEnum.play:
-            entity_manager.pipes_spawn()
-            entity_manager.pipes_movement()
+            entity_manager.spawn_pipes()
+            entity_manager.move_pipes()
             painter.draw_pipes()
 
-            entity_manager.bird_falling()
+            entity_manager.bird_gravity()
             entity_manager.check_collisions()
             entity_manager.increase_score()
 

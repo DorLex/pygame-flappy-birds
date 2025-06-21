@@ -9,7 +9,7 @@ textures_folder: Path = BASE_DIR / 'src/images'
 
 class Window:
     width: int = 800
-    height: int = 600
+    height: int = 600  # == размеру текстуры background
 
 
 class RandomPipeHeight:
