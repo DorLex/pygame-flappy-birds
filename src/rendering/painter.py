@@ -1,5 +1,5 @@
-import pygame
 from pygame import Surface
+from pygame.transform import rotate
 
 from src import textures
 from src.components import screen
@@ -18,18 +18,18 @@ class Painter:
             screen.blit(textures.background, background)
 
     def draw_bird(self) -> None:
-        self.container.bird_frame_num = int((self.container.bird_frame_num + 0.2) % 4)
-        bird_texture: Surface = textures.bird_frames.subsurface(
-            bird.width * self.container.bird_frame_num,
+        bird.frame_num = (bird.frame_num + 0.2) % 4
+        bird_frame_texture: Surface = textures.bird_frames.subsurface(
+            bird.width * int(bird.frame_num),
             0,
             bird.width,
             bird.height,
         )
 
         if self.container.game_condition == GameConditionEnum.play:
-            bird_texture: Surface = pygame.transform.rotate(bird_texture, -bird.fall_speed * 3)
+            bird_frame_texture: Surface = rotate(bird_frame_texture, -bird.fall_speed * 3)
 
-        screen.blit(bird_texture, bird)
+        screen.blit(bird_frame_texture, bird)
 
     def draw_pipes(self) -> None:
         for pipe in self.container.pipes:

@@ -18,7 +18,7 @@ class Bird(Rect):
         self.base_y: int = y
         self.fall_speed: int = 0
         self.jump_speed: int = 14
-        # self.frame_num: int = 0
+        self.frame_num: int | float = 0
 
 
 bird: Bird = Bird()
