@@ -30,6 +30,11 @@
     python run_game.py
     ```    
 
+    - Либо:
+    ```shell
+    poetry run python run_game.py
+    ```
+
 ### Предпросмотр:
 
 ![preview screenshot](preview.png)
