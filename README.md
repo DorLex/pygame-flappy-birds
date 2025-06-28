@@ -13,15 +13,22 @@
     eval $(poetry env activate)
     ```
 
-3. Установить основные зависимости, необходимые для запуска:
+3. Установить только основные зависимости, необходимые для запуска:
    ```shell
    poetry install --no-root --without dev
    ```
 
-4. Установить все зависимости, включая dev/test (+linter, +pre-commit и т.д.):
+4. Установить все зависимости, включая `dev`/`test` (+linter, +pre-commit и т.д.):
     ```shell
     poetry install --no-root
     ```
+
+## Запуск:
+
+1. Играть:
+    ```shell
+    python run_game.py
+    ```    
 
 ### Предпросмотр:
 
