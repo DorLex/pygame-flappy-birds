@@ -1,5 +1,5 @@
-# Реализация игры "Flappy Birds" на `pygame`.
+## Реализация игры "Flappy Birds" на `pygame`.
 
-## Предпросмотр:
+### Предпросмотр:
 
 ![preview screenshot](preview.png)
