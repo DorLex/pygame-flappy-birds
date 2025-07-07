@@ -1,3 +1,5 @@
+from pygame.time import delay
+
 from src.constants import GameConditionEnum, RandomPipeHeight, Window
 from src.models.background import Background
 from src.models.bird import bird
@@ -67,6 +69,8 @@ class EntityManager:
                 self.container.score.value += 0.5
 
     def _game_over(self) -> None:
+        delay(2000)  # 2 секунды
+
         self.container.game_condition = GameConditionEnum.start
         self.container.score.value = 0
         self.container.pipes = []
