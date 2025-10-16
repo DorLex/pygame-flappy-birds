@@ -1,6 +1,6 @@
 ## Реализация игры "Flappy Birds" на `pygame`.
 
-## Установка зависимостей:
+### Установка зависимостей:
 
 1. Создать окружение через `poetry`:
     ```shell
@@ -23,14 +23,26 @@
     poetry install --no-root
     ```
 
-## Запуск:
+### Pre-commit, Linter, Formatter:
 
-1. Играть:
+- Установить `pre-commit` хуки:
+    ```shell
+    pre-commit install
+    ```
+
+- Ручной запуск линтера и форматера:
+    ```shell
+    ruff check --fix --show-fixes && ruff format
+    ```
+
+### Запуск:
+
+- Играть:
     ```shell
     python run_game.py
     ```    
 
-    - Либо:
+- Либо:
     ```shell
     poetry run python run_game.py
     ```
